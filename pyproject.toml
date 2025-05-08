@@ -2,13 +2,8 @@
 name = "simple-online-taxi"
 version = "0.1.0"
 description = "Add your description here"
-authors = [
-    { name = "zparto82", email = "zparto82@gmail.com" }
-]
-dependencies = [
-    "fastapi>=0.115.12",
-    "uvicorn>=0.34.2",
-]
+authors = [{ name = "zparto82", email = "zparto82@gmail.com" }]
+dependencies = ["fastapi>=0.115.12", "uvicorn>=0.34.2", "alembic>=1.15.2"]
 readme = "README.md"
 requires-python = ">= 3.8"
 
@@ -17,13 +12,19 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.rye]
+virtual = true
 managed = true
-dev-dependencies = [
-    "ruff>=0.11.7",
-]
+dev-dependencies = ["ruff>=0.11.7"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/simple_online_taxi"]
+
+[tool.rye.scripts]
+dev = "uvicorn src.simple_online_taxi.main:app --reload"
+test = "python tests/unit_test.py"
+prod = "uvicorn src.simple_online_taxi.main:app --workers 2"
+migrate = "alembic upgrade head"
+makemigrations = "alembic revision --autogenerate"
