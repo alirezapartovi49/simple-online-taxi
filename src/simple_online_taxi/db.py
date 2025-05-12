@@ -1,25 +1,31 @@
-from pathlib import Path
-from importlib import import_module
+import logging
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+from .modules import register_models
+from .settings import settings
 
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./db.sqlite3"
+SQLALCHEMY_DATABASE_URL = settings.db_url
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+engine = create_async_engine(
+    SQLALCHEMY_DATABASE_URL,
+    future=True,
+    echo=False
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+AsyncSessionLocal = sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autoflush=False
+)
 
 Base = declarative_base()
+
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+register_models()

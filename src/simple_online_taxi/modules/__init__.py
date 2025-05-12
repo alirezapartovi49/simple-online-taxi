@@ -4,18 +4,15 @@ import sys
 import logging
 from os.path import dirname, abspath
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
-# Add src directory to Python path
+logger = logging.getLogger("uvicorn.error")
+
 SRC_DIR = dirname(dirname(dirname(abspath(__file__))))
 if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
     logger.info(f"Added to sys.path: {SRC_DIR}")
 
 def register_models():
-    """Dynamically import all models from all modules"""
     base_path = Path(__file__).parent
     logger.info(f"Scanning for models in: {base_path}")
 

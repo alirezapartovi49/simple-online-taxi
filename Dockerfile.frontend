@@ -1,0 +1,38 @@
+FROM oven/bun:1.0-alpine as builder
+
+WORKDIR /app
+
+RUN apk update
+RUN apk add --no-cache brotli-libs
+
+COPY src/frontend/package.json src/frontend/bun.lock ./
+RUN bun install --frozen-lockfile
+
+COPY src/frontend/ .
+RUN bun run build
+
+FROM oven/bun:1.0-alpine as production
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json .
+
+EXPOSE 8080
+CMD ["bun", "run", "preview"]
+
+FROM oven/bun:1.0-alpine as development
+
+WORKDIR /app
+
+RUN apk update
+RUN apk add --no-cache brotli-libs
+
+COPY src/frontend/package.json src/frontend/bun.lock ./
+RUN bun install
+
+COPY src/frontend/ .
+
+EXPOSE 5173
+CMD ["bun", "run", "serve"]

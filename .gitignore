@@ -8,4 +8,13 @@ wheels/
 
 # venv
 .venv
+*.txt
+
+# db
 db.sqlite3
+
+# enviroment
+.env
+
+# log
+*.log
