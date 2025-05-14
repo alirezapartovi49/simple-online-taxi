@@ -1,23 +1,46 @@
+from enum import Enum
+
 from pydantic import BaseModel, PositiveInt, EmailStr, SecretStr, field_serializer
+from typing import Optional
 
 
-class UserCreateOrUpdateInput(BaseModel):
+class DriverStatus(str, Enum):
+    active = "active"
+    inactive = "inactive"
+
+
+class UserBase(BaseModel):
     email: EmailStr
-    password: SecretStr
     username: str
+
+
+class UserCreateOrUpdateInput(UserBase):
+    password: SecretStr
 
     @field_serializer("password", when_used="json")
     def dump_secret(self, v):
-        password = v.get_secret_value()
-        return password
+        return v.get_secret_value()
 
 
-class UserDataOutput(BaseModel):
+class UserDataOutput(UserBase):
     id: PositiveInt
-    email: EmailStr
-    username: str
+    driver: Optional["DriverDataOutput"] = None
+
+    class Config:
+        from_attributes = True
 
 
-class UserTokenData(BaseModel):
-    access_token: str
-    token_type: str
+class DriverCreateOrUpdate(BaseModel):
+    license_number: str
+    status: DriverStatus = DriverStatus.active
+
+
+class DriverDataOutput(DriverCreateOrUpdate):
+    id: PositiveInt
+    user_id: PositiveInt
+
+    class Config:
+        from_attributes = True
+
+
+UserDataOutput.model_rebuild()
