@@ -34,6 +34,22 @@
         </div>
 
         <div class="form-group">
+          <label for="email">ایمیل</label>
+          <Field
+            id="email"
+            name="email"
+            type="email"
+            class="form-input"
+            placeholder="ایمیل خود را وارد کنید"
+            :class="{ 'input-error': errors.email }"
+            dir="auto"
+          />
+          <small v-if="errors.email" class="error-text">{{
+            errors.email
+          }}</small>
+        </div>
+
+        <div class="form-group">
           <label for="password">رمز عبور</label>
           <Field
             id="password"
@@ -51,10 +67,10 @@
 
         <button type="submit" class="btn-login" :disabled="isSubmitting">
           <span v-if="isSubmitting" class="spinner"></span>
-          ورود به سیستم
+          ثبت نام
         </button>
 
-        <router-link to="/register" class="btn-register">ثبت نام</router-link>
+        <router-link to="/login" class="btn-login">ورود</router-link>
 
         <div v-if="errors.apiError" class="api-error">
           {{ errors.apiError }}
@@ -70,23 +86,24 @@ import * as Yup from "yup";
 import { useAuthStore } from "@/stores";
 
 const schema = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  password: Yup.string().required("Password is required"),
+  username: Yup.string().required("نام کاربری اجباری است"),
+  password: Yup.string().required("رمز عبور اجباری است"),
+  email: Yup.string()
+    .email("فرمت ایمیل اشتباه است")
+    .required("ایمیل الزامی است"),
 });
 
 const onSubmit = (values, { setErrors }) => {
   const authStore = useAuthStore();
-  const { username, password } = values;
+  const { username, password, email } = values;
 
   return authStore
-    .login(username, password)
+    .register(username, password, email)
     .catch((error) => setErrors({ apiError: error }));
 };
 </script>
 
 <style scoped>
-@import url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css");
-
 * {
   font-family: "Vazir", sans-serif;
   direction: rtl;
@@ -170,7 +187,7 @@ label {
   margin-top: 0.25rem;
 }
 
-.btn-login {
+.btn-register {
   width: 100%;
   padding: 0.9rem;
   background: linear-gradient(135deg, #4a90e2, #357abd);
@@ -186,17 +203,17 @@ label {
   gap: 0.5rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.btn-login:hover {
+.btn-register:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(74, 144, 226, 0.3);
 }
-.btn-login:disabled {
+.btn-register:disabled {
   background: #bdc3c7;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-.btn-register {
+.btn-login {
   display: block;
   text-align: center;
   margin: 1rem auto 0;
@@ -208,7 +225,7 @@ label {
   font-weight: 600;
   transition: background 0.3s ease, color 0.3s ease;
 }
-.btn-register:hover {
+.btn-login:hover {
   background: #4a90e2;
   color: #fff;
 }

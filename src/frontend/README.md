@@ -1,4 +1,4 @@
-# simple-online-taxi
+# frontend
 
 ## Project setup
 ```

@@ -1,1 +1,1 @@
-export { default as useAuthStore } from "./auth.store.js";
+export { useAuthStore } from "./auth.store";
