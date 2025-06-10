@@ -43,4 +43,9 @@ class DriverDataOutput(DriverCreateOrUpdate):
         from_attributes = True
 
 
+class UserTokenData(BaseModel):
+    access_token: str
+    token_type: str
+
+
 UserDataOutput.model_rebuild()

@@ -1,6 +1,6 @@
 import json
 
-from jose import ExpiredSignatureError
+from jose import ExpiredSignatureError, JWTError
 from starlette import status
 from fastapi import Depends
 from valkey import Valkey
@@ -59,4 +59,8 @@ async def get_request_user(
     except ExpiredSignatureError:
         raise exceptions.UserValidationException(
             message="token expired", status_code=status.HTTP_401_UNAUTHORIZED
+        )
+    except JWTError as e:
+        raise exceptions.UserValidationException(
+            message="token expired " + str(e), status_code=status.HTTP_401_UNAUTHORIZED
         )
