@@ -1,4 +1,3 @@
-````
 # Simple Online Taxi App
 
 ### A modern online taxi application built with FastAPI (Python), Vue.js (frontend), Valkey (Redis-compatible), and Docker. The backend uses Bun as the runtime, SQLAlchemy for ORM, and Alembic for database migrations.
@@ -51,9 +50,11 @@
    ```bash
    git clone https://github.com/alirezapartovi49/simple-online-taxi.git
    cd simple-online-taxi
-````
+   ```
 
-````
+```
+
+```
 
 2. Start the services:
 
@@ -76,6 +77,7 @@ you can install it with this command in linux
 curl -sSf https://rye.astral.sh/get | bash
 
 ```
+
 1. Install Python dependencies:
 
    ```bash
@@ -141,4 +143,7 @@ For production deployment:
    ```bash
    docker-compose -f docker-compose.prod.yml up --build -d
    ```
-````
+
+```
+
+```
