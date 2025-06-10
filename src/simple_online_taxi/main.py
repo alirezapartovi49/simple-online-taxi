@@ -4,6 +4,7 @@ import logging
 from fastapi import FastAPI, APIRouter
 
 from .modules.user.routes import router as user_router
+from .modules.trip.routes import router as trip_router
 from .valkey import test_valkey_connection
 from .settings import settings
 
@@ -17,6 +18,7 @@ async def lifespan(app: FastAPI):
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(user_router)
+api_router.include_router(trip_router)
 
 app = FastAPI(title="taxi online", debug=settings.debug, openapi_prefix="/api")
 app.include_router(api_router)
