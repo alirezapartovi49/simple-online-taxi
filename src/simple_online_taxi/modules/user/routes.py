@@ -1,5 +1,5 @@
+from typing import Annotated, List
 from datetime import timedelta
-from typing import Annotated
 import json
 
 from fastapi.security import OAuth2PasswordRequestForm
@@ -27,14 +27,14 @@ async def get_self(user: models.User = Depends(get_request_user)):
 
 @router.post("/auth/register", status_code=status.HTTP_201_CREATED)
 async def register_user(
-    user_data: models.UserCreateOrUpdateInput,
+    data: models.UserCreateOrUpdateInput,
     db: AsyncSession = Depends(get_db),
     valkey: Valkey = Depends(get_valkey_client),
 ) -> models.UserDataOutput:
-    user_data = json.loads(user_data.model_dump_json())
+    user_data: dict = json.loads(data.model_dump_json())
     user_data["password"] = bcrypt_context.hash(user_data["password"])
     try:
-        user = await repo.create_user(db, user_data)
+        user = await repo.create_user(models.User(**user_data), db)
     except IntegrityError:
         raise exceptions.UserIntegrityException()
     user_cache_data = {"email": user.email, "id": user.id, "username": user.username}
@@ -62,7 +62,7 @@ async def login_for_access_token(
 @router.post(
     "/add-driver/",
     response_model=models.DriverDataOutput,
-    description="method for add logedin user to deivers",
+    description="method for add logedin user to drivers",
 )
 async def create_driver(
     driver_input: models.DriverCreateOrUpdate,
@@ -72,12 +72,24 @@ async def create_driver(
 ):
     driver_data = await valkey.get(f"driver_data_{user.id}")
     if driver_data is None:
-        driver_data = await repo.get_driver(db, user.id)
+        driver_data = await repo.get_driver(user.id, db)
         if driver_data is not None:
             return models.DriverDataOutput(**driver_data)
         else:
             driver = models.Driver(**driver_input.model_dump(), user_id=user.id)
-            driver = await repo.create_driver(db, driver)
-            await valkey.set(models.DriverDataOutput(**driver).model_dump_json())
+            driver = await repo.create_driver(driver, db)
+            await valkey.set(
+                f"driver_data_{user.id}",
+                models.DriverDataOutput(**driver).model_dump_json(),
+            )
     else:
-        return models.DriverDataOutput(json.loads(driver_data))
+        return models.DriverDataOutput(**json.loads(driver_data))
+
+
+@router.post("/all", response_model=List[models.DriverDataOutput])
+async def drivers_all(
+    _: models.UserDataOutput = Depends(get_request_user),
+    db: AsyncSession = Depends(get_db),
+):
+    drivers_data = await repo.get_all_drivers(db)
+    return [models.DriverDataOutput(**driver_data) for driver_data in drivers_data]
