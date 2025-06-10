@@ -41,7 +41,6 @@ services:
       target: development
     container_name: vue-frontend
     ports:
-      - "5173:5173"
       - "8080:8080"
     environment:
       - VITE_API_URL=http://backend:8000/api
@@ -51,7 +50,7 @@ services:
       - backend
     networks:
       - app-network
-  
+
   nginx:
     image: nginx:alpine
     container_name: nginx-proxy

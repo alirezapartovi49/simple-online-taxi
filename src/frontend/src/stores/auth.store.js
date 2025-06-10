@@ -62,5 +62,10 @@ export const useAuthStore = defineStore("auth", {
       const { default: router } = await import("../router");
       router.push("/login");
     },
+    async get_token() {
+      let user_data = await this.user.data;
+      const token = user_data.access_token;
+      return token;
+    },
   },
 });

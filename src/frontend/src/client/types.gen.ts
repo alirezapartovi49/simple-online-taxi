@@ -9,8 +9,39 @@ export type BodyLoginForAccessTokenApiV1UserAuthLoginPost = {
   client_secret?: string | null;
 };
 
+export type DriverCreateOrUpdate = {
+  license_number: string;
+  status?: DriverStatus;
+};
+
+export type DriverDataOutput = {
+  license_number: string;
+  status?: DriverStatus;
+  id: number;
+  user_id: number;
+};
+
+export type DriverStatus = "active" | "inactive";
+
 export type HttpValidationError = {
   detail?: Array<ValidationError>;
+};
+
+export type TripCreate = {
+  driver_id: number;
+  passenger_id?: null;
+  fare: number;
+  from_address: string;
+  to_address: string;
+};
+
+export type TripDataOutput = {
+  driver_id: number;
+  passenger_id: number;
+  fare: number;
+  from_address: string;
+  to_address: string;
+  id: number;
 };
 
 export type UserCreateOrUpdateInputReadable = {
@@ -20,14 +51,15 @@ export type UserCreateOrUpdateInputReadable = {
 
 export type UserCreateOrUpdateInputWritable = {
   email: string;
-  password: string;
   username: string;
+  password: string;
 };
 
 export type UserDataOutput = {
-  id: number;
   email: string;
   username: string;
+  id: number;
+  driver?: DriverDataOutput | null;
 };
 
 export type UserTokenData = {
@@ -111,6 +143,94 @@ export type LoginForAccessTokenApiV1UserAuthLoginPostResponses = {
 
 export type LoginForAccessTokenApiV1UserAuthLoginPostResponse =
   LoginForAccessTokenApiV1UserAuthLoginPostResponses[keyof LoginForAccessTokenApiV1UserAuthLoginPostResponses];
+
+export type CreateDriverApiV1UserAddDriverPostData = {
+  body: DriverCreateOrUpdate;
+  path?: never;
+  query?: never;
+  url: "/api/v1/user/add-driver/";
+};
+
+export type CreateDriverApiV1UserAddDriverPostErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type CreateDriverApiV1UserAddDriverPostError =
+  CreateDriverApiV1UserAddDriverPostErrors[keyof CreateDriverApiV1UserAddDriverPostErrors];
+
+export type CreateDriverApiV1UserAddDriverPostResponses = {
+  /**
+   * Successful Response
+   */
+  200: DriverDataOutput;
+};
+
+export type CreateDriverApiV1UserAddDriverPostResponse =
+  CreateDriverApiV1UserAddDriverPostResponses[keyof CreateDriverApiV1UserAddDriverPostResponses];
+
+export type DriversAllApiV1UserAllPostData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/user/all";
+};
+
+export type DriversAllApiV1UserAllPostResponses = {
+  /**
+   * Successful Response
+   */
+  200: Array<DriverDataOutput>;
+};
+
+export type DriversAllApiV1UserAllPostResponse =
+  DriversAllApiV1UserAllPostResponses[keyof DriversAllApiV1UserAllPostResponses];
+
+export type CreateTripApiV1TripAddTripPostData = {
+  body: TripCreate;
+  path?: never;
+  query?: never;
+  url: "/api/v1/trip/add-trip";
+};
+
+export type CreateTripApiV1TripAddTripPostErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type CreateTripApiV1TripAddTripPostError =
+  CreateTripApiV1TripAddTripPostErrors[keyof CreateTripApiV1TripAddTripPostErrors];
+
+export type CreateTripApiV1TripAddTripPostResponses = {
+  /**
+   * Successful Response
+   */
+  200: TripDataOutput;
+};
+
+export type CreateTripApiV1TripAddTripPostResponse =
+  CreateTripApiV1TripAddTripPostResponses[keyof CreateTripApiV1TripAddTripPostResponses];
+
+export type UserTripsApiV1TripAllPostData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/trip/all";
+};
+
+export type UserTripsApiV1TripAllPostResponses = {
+  /**
+   * Successful Response
+   */
+  200: Array<TripDataOutput>;
+};
+
+export type UserTripsApiV1TripAllPostResponse =
+  UserTripsApiV1TripAllPostResponses[keyof UserTripsApiV1TripAllPostResponses];
 
 export type ClientOptions = {
   baseURL: `${string}://${string}/api` | string;

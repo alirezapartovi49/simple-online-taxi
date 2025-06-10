@@ -15,6 +15,16 @@ import type {
   LoginForAccessTokenApiV1UserAuthLoginPostData,
   LoginForAccessTokenApiV1UserAuthLoginPostResponse,
   LoginForAccessTokenApiV1UserAuthLoginPostError,
+  CreateDriverApiV1UserAddDriverPostData,
+  CreateDriverApiV1UserAddDriverPostResponse,
+  CreateDriverApiV1UserAddDriverPostError,
+  DriversAllApiV1UserAllPostData,
+  DriversAllApiV1UserAllPostResponse,
+  CreateTripApiV1TripAddTripPostData,
+  CreateTripApiV1TripAddTripPostResponse,
+  CreateTripApiV1TripAddTripPostError,
+  UserTripsApiV1TripAllPostData,
+  UserTripsApiV1TripAllPostResponse,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -99,5 +109,108 @@ export const loginForAccessTokenApiV1UserAuthLoginPost = <
       "Content-Type": "application/x-www-form-urlencoded",
       ...options?.headers,
     },
+  });
+};
+
+/**
+ * Create Driver
+ * method for add logedin user to drivers
+ */
+export const createDriverApiV1UserAddDriverPost = <
+  ThrowOnError extends boolean = false
+>(
+  options: Options<CreateDriverApiV1UserAddDriverPostData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    CreateDriverApiV1UserAddDriverPostResponse,
+    CreateDriverApiV1UserAddDriverPostError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/v1/user/add-driver/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * Drivers All
+ */
+export const driversAllApiV1UserAllPost = <
+  ThrowOnError extends boolean = false
+>(
+  options?: Options<DriversAllApiV1UserAllPostData, ThrowOnError>
+) => {
+  return (options?.client ?? _heyApiClient).post<
+    DriversAllApiV1UserAllPostResponse,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/v1/user/all",
+    ...options,
+  });
+};
+
+/**
+ * Create Trip
+ */
+export const createTripApiV1TripAddTripPost = <
+  ThrowOnError extends boolean = false
+>(
+  options: Options<CreateTripApiV1TripAddTripPostData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    CreateTripApiV1TripAddTripPostResponse,
+    CreateTripApiV1TripAddTripPostError,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/v1/trip/add-trip",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  });
+};
+
+/**
+ * User Trips
+ */
+export const userTripsApiV1TripAllPost = <ThrowOnError extends boolean = false>(
+  options?: Options<UserTripsApiV1TripAllPostData, ThrowOnError>
+) => {
+  return (options?.client ?? _heyApiClient).post<
+    UserTripsApiV1TripAllPostResponse,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/v1/trip/all",
+    ...options,
   });
 };
